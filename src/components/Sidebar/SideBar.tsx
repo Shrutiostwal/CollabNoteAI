@@ -1,18 +1,13 @@
 "use client";
 
-import { useCollection } from "react-firebase-hooks/firestore";
-import { useUser } from "@clerk/nextjs";
-
-import NewDocumentButton from "../NewDocumentButton";
+import { useEffect, useState } from "react";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { MenuIcon } from "lucide-react";
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarRail,
+} from "@/components/ui/sidebar";
+import Logo from "@/components/Logo/Logo";
 import {
   collectionGroup,
   DocumentData,
@@ -20,8 +15,12 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "@/firebase";
-import { useEffect, useState } from "react";
-import SidebarOption from "./SidebarOption";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { useUser } from "@clerk/nextjs";
+import SidebarCollapsible from "./SidebarCollapsible";
+import { Separator } from "../ui/separator";
+import NewDocumentButton from "../NewDocumentButton";
+import LoadingSpinner from "../LoadingSpinner";
 
 interface RoomDocument extends DocumentData {
   createdAt: string;
@@ -30,7 +29,7 @@ interface RoomDocument extends DocumentData {
   userId: string;
 }
 
-const SideBar = () => {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useUser();
   const [groupedData, setGroupedData] = useState<{
     owner: RoomDocument[];
@@ -69,63 +68,35 @@ const SideBar = () => {
     );
 
     setGroupedData(grouped);
-  }, [data]);
+  }, [data, user]);
 
-  const menuItems = (
-    <>
-      <NewDocumentButton />
-      <div className="flex flex-col space-y-4 py-4 md:max-w-36">
-        {/* My Documents */}
-        {groupedData.owner.length === 0 ? (
-          <h2 className="text-gray-500 font-semibold text-sm">
-            No documents found
-          </h2>
-        ) : (
-          <>
-            <h2 className="text-gray-500 font font-semibold text-sm">
-              Documents
-            </h2>
-            {groupedData.owner.map((doc) => (
-              <SidebarOption key={doc.id} id={doc.id} href={`/doc/${doc.id}`} />
-            ))}
-          </>
-        )}
-
-        {/* shared with me */}
-        {groupedData.editor.length > 0 && (
-          <>
-            <h2 className="text-gray-500 font-semibold text-sm">
-              Shared with Me
-            </h2>
-            {groupedData.editor.map((doc) => (
-              <SidebarOption key={doc.id} id={doc.id} href={`/doc/${doc.id}`} />
-            ))}
-          </>
-        )}
-      </div>
-    </>
-  );
-
+  useEffect(() => {
+    if (!user) {
+      setGroupedData({ owner: [], editor: [] });
+    }
+  }, [user]);
   return (
-    <div className="p-2 md:p-5 bg-gray-200 relative">
-      <div className="md:hidden">
-        <Sheet>
-          <SheetTrigger>
-            <MenuIcon className="p-2 hover:opacity-30 rounded-lg" size={40} />
-          </SheetTrigger>
-          <SheetContent side={"left"}>
-            <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
-              <SheetDescription>
-                <div>{menuItems}</div>
-              </SheetDescription>
-            </SheetHeader>
-          </SheetContent>
-        </Sheet>
-      </div>
-
-      <div className="hidden md:inline">{menuItems}</div>
-    </div>
+    <Sidebar {...props} className="bg-background">
+      <SidebarHeader className="py-3.5">
+        <Logo />
+      </SidebarHeader>
+      {loading ? (
+        <LoadingSpinner className="w-12 h-12" />
+      ) : (
+        <SidebarContent className="gap-0">
+          <Separator />
+          <div className="flex items-center justify-center py-2 px-4">
+            <NewDocumentButton />
+          </div>
+          <Separator />
+          <SidebarCollapsible data={groupedData.owner} title="My Notes" />
+          <SidebarCollapsible
+            data={groupedData.editor}
+            title="Shared with me"
+          />
+        </SidebarContent>
+      )}
+      <SidebarRail />
+    </Sidebar>
   );
-};
-export default SideBar;
+}

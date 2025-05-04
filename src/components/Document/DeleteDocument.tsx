@@ -27,7 +27,6 @@ const DeleteDocument = () => {
   const handleDelete = async () => {
     const roomId = pathname.split("/").pop();
     if (!roomId) return;
-    // link splitted by / to get document id
 
     startTransition(async () => {
       // delete document

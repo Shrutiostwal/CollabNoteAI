@@ -13,4 +13,3 @@ const DocLayout = async ({
   return <RoomProvider roomId={id}>{children}</RoomProvider>;
 };
 export default DocLayout;
-//documentation (wrapper) made room provider component

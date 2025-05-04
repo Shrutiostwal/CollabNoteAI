@@ -10,9 +10,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const Avatars = () => {
-  // live data of others
   const others = useOthers();
-  // live data of self
   const self = useSelf();
 
   const all = [self, ...others];
@@ -42,4 +40,3 @@ const Avatars = () => {
   );
 };
 export default Avatars;
-// current users
