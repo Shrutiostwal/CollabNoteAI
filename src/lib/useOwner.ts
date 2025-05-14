@@ -21,9 +21,11 @@ const useOwner = () => {
   // 2. dependency array : variables -> change ==> function -> run
   useEffect(() => {
     if (usersInRoom?.docs && usersInRoom.docs.length > 0) {
+      //owners list
       const owners = usersInRoom.docs.filter(
         (doc) => doc.data().role === "owner"
       );
+      //owner list  = current user on not
 
       if (
         owners.some(

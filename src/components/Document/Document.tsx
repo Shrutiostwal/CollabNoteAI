@@ -58,6 +58,7 @@ const Document = ({ id }: { id: string }) => {
               {isUpdating ? "Updating..." : "Update"}
             </span>
           </Button>
+          {/* current user owner or not */}
 
           {isOwner && (
             <>

@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-
+// live feature, current users in doc ko map karwaya
 const Avatars = () => {
   const others = useOthers();
   const self = useSelf();

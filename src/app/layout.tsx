@@ -13,7 +13,7 @@ const georama = Georama({
 });
 
 export const metadata: Metadata = {
-  title: "MindPad",
+  title: "CollabNote AI",
   description:
     "A Next.js project for AI integrated collaborative note-taking software.",
 };
